@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
+	"strconv"
 )
 
-func run() {
-	file, err := os.Open("input.txt")
+func Run() {
+	file, err := os.Open("Day1/input.txt")
 
 	if err != nil {
 		log.Fatal(err)
@@ -21,8 +23,30 @@ func run() {
 	}()
 
 	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+
+	var elves []int
+	totalCals := 0
 
 	for scanner.Scan() {
-		fmt.Print(scanner.Text())
+		if scanner.Text() == "" {
+			elves = append(elves, totalCals)
+			totalCals = 0
+		} else {
+			cals, err := strconv.Atoi(scanner.Text())
+
+			if err == nil {
+				totalCals += cals
+			} else {
+				fmt.Println("Error: ", err)
+			}
+		}
 	}
+
+	sort.Slice(elves, func(i, j int) bool {
+		return elves[i] > elves[j]
+	})
+
+	fmt.Println("Part 1: ", elves[0])
+	fmt.Println("Part 2: ", elves[0]+elves[1]+elves[2])
 }
